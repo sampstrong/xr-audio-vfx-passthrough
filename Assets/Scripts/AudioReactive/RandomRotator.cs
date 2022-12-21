@@ -1,8 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 
+/// <summary>
+/// Inherits from BandReceiver.
+/// Creates semi-random rotations based on band trigger events.
+/// </summary>
 public class RandomRotator : BandReceiver
 {
     [SerializeField] private float _minSpeed = 15;

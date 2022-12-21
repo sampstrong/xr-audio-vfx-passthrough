@@ -17,8 +17,8 @@ public class AudioController : MonoBehaviour
     /// </summary>
     protected virtual void Update()
     {
-        _audioAmplitudeBuffer = AudioSpectrumReader._AmplitudeBuffer; // overall amplitude
-        _audioBandIntensityBuffer = AudioSpectrumReader._audioBandIntensityBuffer[_band]; // individual band
+        _audioAmplitudeBuffer = AudioSpectrumReader.amplitudeBuffer; // overall amplitude
+        _audioBandIntensityBuffer = AudioSpectrumReader.audioBandIntensityBuffer[_band]; // individual band
     }
 
     /// <summary>

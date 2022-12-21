@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+/// <summary>
+/// Use class to spawn a prefab at a predefined position
+/// </summary>
 public class PrefabManager : MonoBehaviour
 {
     [SerializeField] private GameObject _prefabToSpawn;
@@ -10,6 +11,10 @@ public class PrefabManager : MonoBehaviour
 
     private bool _isInstantiated;
 
+    /// <summary>
+    /// Spawns prefab at position defined in the inspector. Public access allows for gesture based spawning
+    /// while _isInstantiated bool ensures the prefab is only instantiated once.
+    /// </summary>
     [Button]
     public void SpawnPrefab()
     {
@@ -18,7 +23,7 @@ public class PrefabManager : MonoBehaviour
         Instantiate(_prefabToSpawn, _positionReference.transform.position, Quaternion.identity);
         _isInstantiated = true;
     }
-
+    
     public void Reset()
     {
         _isInstantiated = false;

@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using Pixelplacement.XRTools;
 using UnityEngine;
 
+/// <summary>
+/// Class handles audio start and stop based on interaction manager events
+/// </summary>
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioSource _audioSource;
     
-    // Start is called before the first frame update
     void Start()
     {
-        // RoomMapper.Instance.OnRoomMapped += StartAudio;
         InteractionManager.Instance.onInteractionStateChanged.AddListener(StartAudio);
     }
 
@@ -25,6 +23,5 @@ public class AudioManager : MonoBehaviour
             if (_audioSource.isPlaying) return;
             _audioSource.Play();    
         }
-        
     }
 }

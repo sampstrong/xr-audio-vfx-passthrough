@@ -1,53 +1,66 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-
-
+/// <summary>
+/// Reads audio spectrum data across 8 bands from a the audio source
+/// attached to the same GameObject
+/// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class AudioSpectrumReader : MonoBehaviour
 {
     private AudioSource _audioSource;
 
-    [HideInInspector] public float[] _samplesLeft = new float[512];
-    [HideInInspector] public float[] _samplesRight = new float[512];
+    // array of samples for each side of the stereo image
+    private float[] _samplesLeft = new float[512];
+    private float[] _samplesRight = new float[512];
 
-    public static float[] _freqBand = new float[8];
-    public static float[] _bandBuffer = new float[8];
+    // array of frequency bands
+    private static float[] freqBand = new float[8];
+    
+    // smoothing values for band buffer
+    private static float[] _bandBuffer = new float[8];
     private float[] _bufferDecrease = new float[8];
 
+    // initialization values for each band
     private float[] _freqBandHighest = new float[8];
-    public static float[] _audioBandIntensity = new float[8];
-    public static float[] _audioBandIntensityBuffer = new float[8];
+    
+    // intensity values for each band
+    public static float[] audioBandIntensity = new float[8];
+    public static float[] audioBandIntensityBuffer = new float[8];
 
-    public static float _Amplitude, _AmplitudeBuffer;
-    private float _AmlitudeHighest;
+    // overall amplitude values
+    public static float amplitude, amplitudeBuffer;
+    private float _amplitudeHighest;
 
-    public float _audioProfile = 5;
+    // variable to initialize highest values
+    public float audioProfile = 5;
 
-    public enum _channel {Stereo, Left, Right};
-    public _channel channel = new _channel();
-
-    // Start is called before the first frame update
-    void Start()
+    public enum Channel {Stereo, Left, Right};
+    public Channel channel = new Channel();
+    
+    /// <summary>
+    /// Initializes the Audio Source to pull data from
+    /// </summary>
+    private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-        SetAudioProfile(_audioProfile);
+        SetAudioProfile(audioProfile);
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void Update()
     {
-        
         GetSpectrumAudioSource();
         MakeFrequencyBands();
         MakeBandBuffer();
         CreateAudioBandIntensity();
         GetAmplitude();
-
     }
 
-    void SetAudioProfile(float audioProfile)
+    /// <summary>
+    /// Initializes the highest value so values are more consistent when audio first starts
+    /// rather than starting with a highest value of 0
+    /// </summary>
+    /// <param name="audioProfile"></param>
+    private void SetAudioProfile(float audioProfile)
     {
         for (int i = 0; i < 8; i++)
         {
@@ -55,54 +68,61 @@ public class AudioSpectrumReader : MonoBehaviour
         }
     }
 
-    void GetAmplitude()
+    /// <summary>
+    /// Gets the amplitude average of all the bands combined and remaps it
+    /// to a value between 0 and 1
+    /// </summary>
+    private void GetAmplitude()
     {
-
         float _CurrentAmplitude = 0;
         float _CurrentAmplitudeBuffer = 0;
 
         for (int i = 0; i < 8; i++)
         {
-            _CurrentAmplitude += _audioBandIntensity[i];
-            _CurrentAmplitudeBuffer += _audioBandIntensityBuffer[i];
+            _CurrentAmplitude += audioBandIntensity[i];
+            _CurrentAmplitudeBuffer += audioBandIntensityBuffer[i];
         }
 
-        if(_CurrentAmplitude > _AmlitudeHighest)
+        if(_CurrentAmplitude > _amplitudeHighest)
         {
-            _AmlitudeHighest = _CurrentAmplitude;
+            _amplitudeHighest = _CurrentAmplitude;
         }
 
-        _Amplitude = _CurrentAmplitude / _AmlitudeHighest;
-        _AmplitudeBuffer = _CurrentAmplitudeBuffer / _AmlitudeHighest;
+        amplitude = _CurrentAmplitude / _amplitudeHighest;
+        amplitudeBuffer = _CurrentAmplitudeBuffer / _amplitudeHighest;
     }
 
-
-    void CreateAudioBandIntensity()
+    /// <summary>
+    /// Calculates intensity for each band relative to the highest value for the band
+    /// Creates values in between 0 and 1 for easier use in controlling other variables
+    /// </summary>
+    private void CreateAudioBandIntensity()
     {
         for (int i = 0; i < 8; i++)
         {
-            
-
-            if (_freqBand[i] > _freqBandHighest[i])
+            if (freqBand[i] > _freqBandHighest[i])
             {
-                _freqBandHighest[i] = _freqBand[i];
+                _freqBandHighest[i] = freqBand[i];
             }
 
-            _audioBandIntensity[i] = (_freqBand[i] / _freqBandHighest[i]);
-            _audioBandIntensityBuffer[i] = (_bandBuffer[i] / _freqBandHighest[i]);
+            audioBandIntensity[i] = (freqBand[i] / _freqBandHighest[i]);
+            audioBandIntensityBuffer[i] = (_bandBuffer[i] / _freqBandHighest[i]);
         }
     }
 
-    void MakeBandBuffer()
+    /// <summary>
+    /// Creates a buffer that smooths out values
+    /// </summary>
+    private void MakeBandBuffer()
     {
         for (int g = 0; g < 8; ++g)
         {
-            if (_freqBand[g] > _bandBuffer[g])
+            if (freqBand[g] > _bandBuffer[g])
             {
-                _bandBuffer[g] = _freqBand[g];
+                _bandBuffer[g] = freqBand[g];
                 _bufferDecrease[g] = 0.005f;
             }
-            if (_freqBand[g] < _bandBuffer[g])
+            if (freqBand[g] < _bandBuffer[g])
             {
                 _bandBuffer[g] -= _bufferDecrease[g];
                 _bufferDecrease[g] *= 1.2f;
@@ -110,15 +130,20 @@ public class AudioSpectrumReader : MonoBehaviour
         }
     }
 
-    void GetSpectrumAudioSource()
+    /// <summary>
+    /// Pulls spectrum data from the samples
+    /// </summary>
+    private void GetSpectrumAudioSource()
     {
         _audioSource.GetSpectrumData(_samplesLeft, 0, FFTWindow.Blackman);
         _audioSource.GetSpectrumData(_samplesRight, 1, FFTWindow.Blackman);
     }
 
-    
-
-    void MakeFrequencyBands()
+    /// <summary>
+    /// Separates audio into sonically correct bands with correct frequency ranges and samples.
+    /// Calculates average value for each band based on samples.
+    /// </summary>
+    private void MakeFrequencyBands()
     {
         /* 22050 Hz / 512 samples = 43Hz per sample
          * 
@@ -151,15 +176,15 @@ public class AudioSpectrumReader : MonoBehaviour
             for (int j = 0; j < sampleCount; j++)
             {
 
-                if(channel == _channel.Stereo)
+                if(channel == Channel.Stereo)
                 {
                     average += (_samplesLeft[count] + _samplesRight[count]) * (count + 1);
                 }
-                if(channel == _channel.Left)
+                if(channel == Channel.Left)
                 {
                     average += _samplesLeft[count] * (count + 1);
                 }
-                if (channel == _channel.Right)
+                if (channel == Channel.Right)
                 {
                     average += _samplesRight[count] * (count + 1);
                 }
@@ -169,10 +194,7 @@ public class AudioSpectrumReader : MonoBehaviour
 
             average /= count;
 
-            _freqBand[i] = average * 10;
-
+            freqBand[i] = average * 10;
         }
-
-
     }
 }

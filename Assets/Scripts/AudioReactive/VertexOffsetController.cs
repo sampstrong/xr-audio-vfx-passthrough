@@ -1,7 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Inherits from BandReceiver.
+/// Controls strength of vertex offset for materials with animated,
+/// noise based vertex offset shaders based on band triggers
+/// </summary>
 public class VertexOffsetController : BandReceiver
 {
    [SerializeField] private Material _material;

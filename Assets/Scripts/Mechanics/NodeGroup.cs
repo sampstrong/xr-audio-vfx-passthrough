@@ -1,16 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using OVR.OpenVR;
 using Sirenix.OdinInspector;
-using TMPro;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Assertions;
-using UnityEngine.Rendering;
-using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// Class for creating and controlling a group of of audio reactive nodes
+/// </summary>
 public class NodeGroup : MonoBehaviour
 {
     public List<Node> Nodes { get => _nodes; }
@@ -55,15 +51,6 @@ public class NodeGroup : MonoBehaviour
     private float _zUpperBounds;
 
     private List<Node> _nodes = new List<Node>();
-
-    public class Node
-    {
-        public GameObject obj;
-        public Rigidbody rb;
-        public Renderer rend;
-        public List<GameObject> children = new List<GameObject>();
-        public List<LineRenderer> lines = new List<LineRenderer>();
-    }
     
     void Start()
     {
@@ -78,7 +65,10 @@ public class NodeGroup : MonoBehaviour
         InitObjects();
     }
 
-    public void GetInteractionState()
+    /// <summary>
+    /// Initializes node state based on interaction state
+    /// </summary>
+    private void GetInteractionState()
     {
         switch (InteractionManager.Instance.CurrentInteractionState)
         {
@@ -101,6 +91,10 @@ public class NodeGroup : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the global node state and initializes each node
+    /// </summary>
+    /// <param name="state"></param>
     [Button]
     public void SetNodeState(NodeState state)
     {
@@ -112,7 +106,11 @@ public class NodeGroup : MonoBehaviour
         }
     }
 
-    public void InitializeNodeState(Node node)
+    /// <summary>
+    /// Sets appropriate physics for each node depending on the current node state
+    /// </summary>
+    /// <param name="node"></param>
+    private void InitializeNodeState(Node node)
     {
         if (nodeState == NodeState.Inactive)
         {
@@ -136,6 +134,11 @@ public class NodeGroup : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates a set of nodes at random positions based on the number of nodes
+    /// and range specified in the inspector. Also adds a line renderer to each node
+    /// for each other node for desired visual connection effect
+    /// </summary>
     private void InitObjects()
     {
         for (int i = 0; i < _numberOfNodes; i++)
@@ -177,19 +180,32 @@ public class NodeGroup : MonoBehaviour
         }
     }
 
-    void Update()
+    /// <summary>
+    /// Update handles change in line appearance and node position based on bounds
+    /// </summary>
+    private void Update()
     {
         DrawLines();
         if (nodeState == NodeState.Inactive || nodeState == NodeState.Spawning) return;
         EnforceBounds();
     }
 
+    /// <summary>
+    /// Fixed update handles changes in velocity for more predictable physics behavior
+    /// </summary>
     private void FixedUpdate()
     {
         if (nodeState == NodeState.Inactive || nodeState == NodeState.Spawning) return;
         RegulateVelocity();
     }
 
+    /// <summary>
+    /// Sets the three-dimensional boundary for the nodes based on values assigned
+    /// in the inspector.
+    /// </summary>
+    /// <param name="xRange"></param>
+    /// <param name="yRange"></param>
+    /// <param name="zRange"></param>
     private void SetBounds(float xRange, float yRange, float zRange)
     {
         Vector3 currentPos = transform.position;
@@ -202,6 +218,10 @@ public class NodeGroup : MonoBehaviour
         _zUpperBounds = currentPos.z + zRange;
     }
 
+    /// <summary>
+    /// Returns a random x, y, and z position within predefined bounds
+    /// </summary>
+    /// <returns></returns>
     private Vector3 GetRandomPosition()
     {
         float xPos = Random.Range(_xLowerBounds, _xUpperBounds);
@@ -211,6 +231,10 @@ public class NodeGroup : MonoBehaviour
         return new Vector3(xPos, yPos, zPos);
     }
 
+    /// <summary>
+    /// Returns a random velocity. Both speed and direction will be randomized.
+    /// </summary>
+    /// <returns></returns>
     public Vector3 SetVelocity()
     {
         var value = Random.value;
@@ -220,6 +244,10 @@ public class NodeGroup : MonoBehaviour
         return velocity;
     }
 
+    /// <summary>
+    /// Sets the velocity for each node on first frame when switching from inactive
+    /// or spawning states. Keeps nodes moving within velocity limits assigned in inspector
+    /// </summary>
     private void RegulateVelocity()
     {
         foreach (var node in _nodes)
@@ -230,12 +258,16 @@ public class NodeGroup : MonoBehaviour
                 return;
             }
             
+            // get current direction for each node to maintain direction when assigning velocities below
             var direction = node.rb.velocity / node.rb.velocity.magnitude;
             
+            // set velocity to lower limit if velocity goes below that limit
             if (node.rb.velocity.magnitude < _velocityLowerLimit)
             {
                 node.rb.velocity = direction * _velocityLowerLimit;
             }
+            
+            // set velocity to upper limit if velocity goes above that limit
             else if (node.rb.velocity.magnitude > _velocityUpperLimit)
             {
                 node.rb.velocity = direction * _velocityUpperLimit;
@@ -243,6 +275,10 @@ public class NodeGroup : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Uses the defined bounds to reverse the velocity for each node when the position
+    /// goes past the boundary on each axis. Results in a bouncing effect when nodes hit boundary.
+    /// </summary>
     private void EnforceBounds()
     {
         foreach (var node in _nodes)
@@ -285,8 +321,13 @@ public class NodeGroup : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Controls line visibility between nodes depending on state and distance threshold
+    /// set in the inspector
+    /// </summary>
     private void DrawLines()
     {
+        // turn off lines for inactive and spawning states
         if (nodeState == NodeState.Inactive || nodeState == NodeState.Spawning)
         {
             foreach (var node in _nodes)
@@ -300,6 +341,7 @@ public class NodeGroup : MonoBehaviour
             return;
         }
         
+        // sets up line renderers to connect to other nearby nodes when they are closer than the threshold
         for (int i = 0; i < _nodes.Count; i++)
         {
             for (int j = i + 1; j < _nodes.Count; j++)
@@ -321,9 +363,18 @@ public class NodeGroup : MonoBehaviour
             }
         }
     }
+}
 
-   
-    
+/// <summary>
+/// Class holding data for each individual node
+/// </summary>
+public class Node
+{
+    public GameObject obj;
+    public Rigidbody rb;
+    public Renderer rend;
+    public List<GameObject> children = new List<GameObject>();
+    public List<LineRenderer> lines = new List<LineRenderer>();
 }
 
 

@@ -3203,7 +3203,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  _audioProfile: 7
+  audioProfile: 7
   channel: 0
 --- !u!1 &1650462263 stripped
 GameObject:

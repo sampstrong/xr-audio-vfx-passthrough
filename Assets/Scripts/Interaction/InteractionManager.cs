@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 
+
+/// <summary>
+/// Class handles global interaction state and interactions for debugging
+/// </summary>
 public class InteractionManager : Singleton<InteractionManager>
 {
     public Camera MainCamera { get => _mainCamera; }
@@ -55,35 +55,22 @@ public class InteractionManager : Singleton<InteractionManager>
     
     void Update()
     {
+        ToggleDebugOnSystemGesture();
+    }
+
+    /// <summary>
+    /// Toggles debug log on when left palm faces HMD
+    /// </summary>
+    private void ToggleDebugOnSystemGesture()
+    {
         if (_leftHand.IsSystemGestureInProgress)
         {
             _consoleCanvas.alpha = 1;
-
             _console.transform.rotation = _leftHand.transform.rotation;
-            return;
-            
-            /*
-            _console.transform.up = Vector3.up;
-            _console.transform.rotation = Quaternion.Euler(
-                _console.transform.rotation.x, 
-                _leftHand.transform.rotation.y, 
-                _console.transform.rotation.z);
-                */
-            
         }
         else
         {
             _consoleCanvas.alpha = 0;
         }
-        
-
-        // if (OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.Hands)) {
-        //     Debug.LogWarning("Hand-Tracking Start Button DOWN");
-        //     GameObject console = Instantiate(_debugConsole, _leftHand.transform);
-        // }
-        //
-        // if (OVRInput.GetUp(OVRInput.Button.Start, OVRInput.Controller.Hands)) {
-        //     Debug.LogWarning("Hand-Tracking Start Button UP");
-        // }
     }
 }

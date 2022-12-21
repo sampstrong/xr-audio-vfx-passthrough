@@ -1,17 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Creates global trigger events for each frequency band when they get above a certain intensity
+/// </summary>
 public class BandTrigger : Singleton<BandTrigger>
 {
     public Band[] Bands { get => _bands; }
     
+    // events for going above and below threshold
     public UnityEvent[] onBandTriggered = new UnityEvent[8];
     public UnityEvent[] onBandReleased = new UnityEvent[8];
     
     private Band[] _bands = new Band[8];
 
+    /// <summary>
+    /// Creates an array of bands and initializes each one
+    /// </summary>
     private void Start()
     {
         for (int i = 0; i < _bands.Length; i++)
@@ -20,16 +24,22 @@ public class BandTrigger : Singleton<BandTrigger>
         }
     }
     
+    /// <summary>
+    /// Pulls data for each band from the AudioSpectrumReader and feeds it into the trigger
+    /// </summary>
     private void Update()
     {
         for (int i = 0; i < _bands.Length; i++)
         {
-            _bands[i].Intensity = AudioSpectrumReader._audioBandIntensityBuffer[i];
+            _bands[i].Intensity = AudioSpectrumReader.audioBandIntensityBuffer[i];
         }
         
         GetBandTrigger();
     }
 
+    /// <summary>
+    /// Controls events for each band for triggered and released
+    /// </summary>
     private void GetBandTrigger()
     {
         for (int i = 0; i < _bands.Length; i++)
@@ -46,25 +56,6 @@ public class BandTrigger : Singleton<BandTrigger>
             }
         }
     }
-
-    /* Old - delete after testing new code
-    private void GetBandTrigger()
-    {
-        for (int i = 0; i < _numberOfBands; i++)
-        {
-            if (_audioBandIntensity[i] > 0.5f && !_bandTriggered[i])
-            {
-                _bandTriggered[i] = true;
-                onBandTriggered[i].Invoke();
-            }
-            else if (_audioBandIntensity[i] < 0.5f && _bandTriggered[i])
-            {
-                _bandTriggered[i] = false;
-                onBandReleased[i].Invoke();
-            }
-        }
-    }
-    */
 }
 
 

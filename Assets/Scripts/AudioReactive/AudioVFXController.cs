@@ -1,9 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
+/// <summary>
+/// Controls VFX speed and color based on audio band intensity
+/// </summary>
 public class AudioVFXController : MonoBehaviour
 {
     [SerializeField] private int _band;
@@ -15,8 +15,8 @@ public class AudioVFXController : MonoBehaviour
 
     void Update()
     {
-        float _audioAmplitudeBuffer = AudioSpectrumReader._AmplitudeBuffer; // overall amplitude
-        float _audioBandIntensityBuffer = AudioSpectrumReader._audioBandIntensityBuffer[_band]; // individual band
+        float _audioAmplitudeBuffer = AudioSpectrumReader.amplitudeBuffer; // overall amplitude
+        float _audioBandIntensityBuffer = AudioSpectrumReader.audioBandIntensityBuffer[_band]; // individual band
         
         ControlVFXSpeed(_audioBandIntensityBuffer);
         ControlVFXColor(_audioBandIntensityBuffer);

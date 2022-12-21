@@ -1,21 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using Oculus.Interaction;
 using Oculus.Interaction.Input;
 using UnityEngine;
 
+/// <summary>
+/// Class handles the instantiation of appropriate VFX to give visual
+/// feedback when a hand pose is detected.
+/// </summary>
 public class PoseVisual : MonoBehaviour
 {
+    // array of poses
     [SerializeField] private ActiveStateSelector[] _poses;
+    
+    // array of visuals corresponding to each pose by index
     [SerializeField] private GameObject[] _poseVisualPrefabs;
 
     private GameObject _currentVisual;
     
     private void Start()
     {
-        //_poseVisual = Instantiate(_poseActiveVisualPrefab);
-        //_poseVisual.SetActive(false);
-        
         for (int i = 0; i < _poses.Length; i++)
         {
             int poseNumber = i;
@@ -24,6 +26,10 @@ public class PoseVisual : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates a pose visual based on the pose index of the recognized pose
+    /// </summary>
+    /// <param name="poseNumber"></param>
     private void ShowVisuals(int poseNumber)
     {
         _currentVisual = Instantiate(_poseVisualPrefabs[poseNumber]);
@@ -54,6 +60,10 @@ public class PoseVisual : MonoBehaviour
         _currentVisual.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides visuals when pose is no longer recognized
+    /// </summary>
+    /// <param name="poseNumber"></param>
     private void HideVisuals(int poseNumber)
     {
         _currentVisual.gameObject.SetActive(false);

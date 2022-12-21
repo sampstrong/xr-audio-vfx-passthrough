@@ -1,6 +1,6 @@
-using UnityEngine;
-using UnityEngine.Events;
-
+/// <summary>
+/// Class holds basic info for a given band
+/// </summary>
 public class Band
 {
     public float Intensity;

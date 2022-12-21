@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Inherits from AudioController. Used to control scale of objects based on audio input
+/// </summary>
 public class AudioGeometryController : AudioController
 {
     [SerializeField] private float _minScale = 0.3f;

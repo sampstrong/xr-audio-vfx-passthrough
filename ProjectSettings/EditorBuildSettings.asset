@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/RoomMapperHands.unity
+    path: Assets/Scenes/TestScenes/RoomMapperHands.unity
     guid: f240be42a267c48fe914c76092202dad
   - enabled: 0
     path: Assets/Other/Pixelplacement/OculusQuest/Demos/RoomMapper/Scenes/RoomMapper.unity
@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Other/Oculus/Interaction/Samples/Scenes/Examples/HandGrabExamples.unity
     guid: 39ae0e546b9edc0408d3b11c6a7c2814
   - enabled: 1
-    path: Assets/Scenes/RoomMapperHandsGrabbable.unity
+    path: Assets/Scenes/Main/RoomMapperHandsGrabbable.unity
     guid: 58eb09c7287a949e0b38da5acbade987
   - enabled: 0
     path: Assets/Other/Oculus/SampleFramework/Usage/Passthrough/Scenes/PassthroughHands.unity

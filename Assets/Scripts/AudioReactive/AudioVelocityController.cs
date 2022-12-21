@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Inherits from AudioController. Used to control velocity of objects based on audio input
+/// </summary>
 public class AudioVelocityController : AudioController
 {
     [SerializeField] private NodeGroup _nodeGroup;
@@ -21,8 +22,6 @@ public class AudioVelocityController : AudioController
 
     private void Start()
     {
-        //onKickTriggered.AddListener(IncreaseVelocity);
-        //onKickReleased.AddListener(DecreaseVelocity);
         ChangeMaterial(_matOne);
     }
     
@@ -32,15 +31,15 @@ public class AudioVelocityController : AudioController
         GetBeatTrigger();
     }
     
-    
-    // should rework/rename this class to BeatTrigger and just send events that other scripts can pick up
-    // make a singleton for easy access across all scripts
+    /// <summary>
+    /// Increases velocity and changes material when the specified band goes above the threshold.
+    /// Changes back to original velocity and material when the band goes below the threshold.
+    /// </summary>
     private void GetBeatTrigger()
     {
         if (_audioBandIntensityBuffer > 0.5f && !_aboveTriggerThreshold)
         {
             _aboveTriggerThreshold = true;
-            //onKickTriggered.Invoke();
             IncreaseVelocity();
             ChangeMaterial(_matTwo);
             _beatCount++;
@@ -57,12 +56,14 @@ public class AudioVelocityController : AudioController
         else if (_audioBandIntensityBuffer < 0.5 && _aboveTriggerThreshold)
         {
             _aboveTriggerThreshold = false;
-            //onKickReleased.Invoke();
             DecreaseVelocity();
             ChangeMaterial(_matOne);
         }
     }
 
+    /// <summary>
+    /// Increases the velocity of each node in the group
+    /// </summary>
     private void IncreaseVelocity()
     {
         if (_nodeGroup.Nodes.Count < _nodeGroup.NumberOfNodes) return;
@@ -74,6 +75,9 @@ public class AudioVelocityController : AudioController
         }
     }
 
+    /// <summary>
+    /// Decreases the velocity of each node in the group
+    /// </summary>
     private void DecreaseVelocity()
     {
         if (_nodeGroup.Nodes.Count < _nodeGroup.NumberOfNodes) return;
@@ -84,12 +88,24 @@ public class AudioVelocityController : AudioController
         }
     }
 
+    /// <summary>
+    /// Sets the speed based on the audio band's intensity
+    /// </summary>
+    /// <param name="min"></param>
+    /// Minimum speed the nodes will travel
+    /// <param name="max"></param>
+    /// Maximum speed the nodes will travel
+    /// <returns></returns>
     private float SetSpeed(float min, float max)
     {
         float speed = GetControlValue(_audioBandIntensityBuffer, min, max);
         return speed;
     }
 
+    /// <summary>
+    /// Changes the material for each node
+    /// </summary>
+    /// <param name="mat"></param>
     private void ChangeMaterial(Material mat)
     {
         foreach (var node in _nodeGroup.Nodes)
