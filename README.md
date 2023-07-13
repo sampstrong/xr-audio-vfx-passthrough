@@ -22,6 +22,6 @@ A project exploring relationships between visual effects and audio in mixed real
 
 ## Things to Note
 
-This repo is under construction. I'm switching it from the Oculus Integration SDK to Unity's XR Interaction Toolkit, as it now supports hand tracking and it will allow this project to run on multiple devices. That being said, builds will not run as is right now. You can still take a look at the main node effect in Unity in the NodeGroup scene ![here](Assets/Scenes/Main/NodeGroup.unity)
+This repo is under construction. I'm switching it from the Oculus Integration SDK to Unity's XR Interaction Toolkit, as it now supports hand tracking and it will allow this project to run on multiple devices. That being said, builds will not run as is right now. You can still take a look at the main node effect in Unity in the NodeGroup scene here: [Assets/Scenes/Main/NodeGroup](Assets/Scenes/Main)
 
 ![](Assets/Images/Thumbnail.png)
