@@ -25,7 +25,8 @@ public class InteractionManager : Singleton<InteractionManager>
     }
 
     public UnityEvent onInteractionStateChanged;
-    
+
+    [SerializeField] private InteractionState _startingState;
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private GameObject _debugConsole;
     [SerializeField] private OVRHand _leftHand;
@@ -36,7 +37,10 @@ public class InteractionManager : Singleton<InteractionManager>
     
     void Start()
     {
-        SetInteractionState(InteractionState.Inactive);
+        SetInteractionState(_startingState);
+
+        if (!_console) return;
+        
         _console = Instantiate(_debugConsole, _leftHand.transform);
         _consoleCanvas = _console.GetComponentInChildren<CanvasGroup>();
         _consoleCanvas.alpha = 0;
@@ -63,6 +67,8 @@ public class InteractionManager : Singleton<InteractionManager>
     /// </summary>
     private void ToggleDebugOnSystemGesture()
     {
+        if (!_leftHand) return;
+        
         if (_leftHand.IsSystemGestureInProgress)
         {
             _consoleCanvas.alpha = 1;

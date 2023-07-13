@@ -1,6 +1,6 @@
 # XR Audio VFX 
 
-A work in progress exploring relationships between visual effects and audio in mixed reality settings that incorporate hand tracking and physics-based interactions. The project has been created using the Oculus Integration Unity Package with passthrough on my Quest 2.
+A project exploring relationships between visual effects and audio in mixed reality settings that incorporate hand tracking and physics-based interactions in Unity.
 
 ## Audio Reactive Explorations
 
@@ -22,4 +22,6 @@ A work in progress exploring relationships between visual effects and audio in m
 
 ## Things to Note
 
-- If you close this project, it will not run as is, as I've taken out the Oculus SDK, however the code I've written does not rely on it, and could easilty be transferred to a different project.
+This repo is under construction. I'm switching it from the Oculus Integration SDK to Unity's XR Interaction Toolkit, as it now supports hand tracking and it will allow this project to run on multiple devices. That being said, builds will not run as is right now. You can still take a look at the main node effect in Unity in the NodeGroup scene ![here](Assets/Scenes/Main/NodeGroup.unity)
+
+![](Assets/Images/Thumbnail.png)

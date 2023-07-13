@@ -54,7 +54,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Speed_Damper: 300
-    - _Strength: 0.005737439
+    - _Strength: 0.003
     m_Colors:
     - _BaseColor: {r: 0, g: 1, b: 0.76497746, a: 0}
     - _Offset: {r: 3.86, g: -1.28, b: 0, a: 0}
